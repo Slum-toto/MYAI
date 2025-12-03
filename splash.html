@@ -6,59 +6,92 @@
 <title>Protogen AI - Enhanced</title>
 <style>
 /* COMPLETE CSS */
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 body { overflow:hidden; transition:0.3s; background:#0d0d0f; color:#f1f1f1; }
-body.light { --bg:#f5f5f5; --text:#111; --card:#ffffffcc; --sidebar:#ffffff; --input:#eee; }
-body.dark { --bg:#0d0d0f; --text:#f1f1f1; --card:#1a1a1ccc; --sidebar:#111; --input:#222; }
+body.light { --bg:#f5f5f5; --text:#111; --card:#ffffffcc; --sidebar:#ffffff; --input:#eee; --shadow:#0001; }
+body.dark { --bg:#0d0d0f; --text:#f1f1f1; --card:#1a1a1ccc; --sidebar:#111; --input:#222; --shadow:#fff1; }
 body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
 
 #navbar { position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:linear-gradient(90deg,#ff0080,#7928ca); color:white; box-shadow:0 4px 20px #0007; z-index:300; }
 #navbar .logo { font-size:24px; font-weight:bold; letter-spacing:1px; }
-#navbar .menu { cursor:pointer; font-size:24px; }
-#sidebar { position: fixed; top:60px; left:0; width:280px; height:calc(100vh - 60px); background: var(--sidebar); box-shadow: 4px 0 30px #0005; padding:20px; display:flex; flex-direction:column; gap:15px; transform: translateX(0); transition:0.5s ease; z-index:200; overflow-y:auto; }
-#sidebar.closed { transform: translateX(-100%); }
-.title { font-size:28px; font-weight:bold; background: linear-gradient(90deg,#ff00ff,#00ffff); -webkit-background-clip:text; background-clip:text; color:transparent; }
-.sidebar-info p { font-size:14px; margin:5px 0; }
+#navbar .menu { cursor:pointer; font-size:24px; transition:0.3s; }
+#navbar .menu:hover { transform:scale(1.1); }
+#sidebar { position: fixed; top:60px; left:0; width:280px; height:calc(100vh - 60px); background: var(--sidebar); box-shadow: 4px 0 30px #0005; padding:20px; display:flex; flex-direction:column; gap:15px; transform: translateX(-100%); transition:0.5s ease; z-index:200; overflow-y:auto; }
+#sidebar.open { transform: translateX(0); }
+.title { font-size:28px; font-weight:bold; background: linear-gradient(90deg,#ff00ff,#00ffff); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:10px; }
+.sidebar-info { background: var(--card); padding:15px; border-radius:12px; margin-bottom:10px; }
+.sidebar-info p { font-size:13px; margin:8px 0; line-height:1.5; }
 .button, #sendBtn, #uploadBtn, #modeToggle { padding:12px 20px; border-radius:12px; border:none; cursor:pointer; font-weight:bold; transition:0.3s; background:linear-gradient(45deg,#ff0,#f0f,#0ff,#0f0,#f00); background-size:400% 400%; color:white; animation: gradientBG 6s ease infinite; }
-.button:hover, #sendBtn:hover, #uploadBtn:hover, #modeToggle:hover { transform:scale(1.05); }
+.button:hover, #sendBtn:hover, #uploadBtn:hover, #modeToggle:hover { transform:scale(1.05); box-shadow:0 4px 15px #fff3; }
 @keyframes gradientBG { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
-#personalitySelect { padding:10px; border-radius:8px; background:#333; color:white; border:none; width:100%; }
-#main { margin-left:280px; margin-top:60px; height:calc(100vh - 60px); display:flex; flex-direction:column; transition:0.5s ease; }
-#sidebar.closed ~ #main { margin-left:0; }
-#chatBox { flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; }
-.msg { max-width:70%; padding:14px 18px; border-radius:20px; backdrop-filter:blur(10px); word-break:break-word; opacity:0; transform:translateY(20px); animation: fadeIn 0.5s forwards; display:flex; gap:10px; align-items:flex-start; }
-.user { background: linear-gradient(120deg,#00f,#0ff); color:white; margin-left:auto; box-shadow:0 4px 12px #00f5; flex-direction:row-reverse; }
-.ai { background: var(--card); border:1px solid #ffffff22; box-shadow:0 4px 12px #fff2; }
-.avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(45deg,#ff0080,#00ffff); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-#inputArea { display:flex; padding:12px; gap:10px; background: var(--sidebar); }
-#prompt { flex:1; padding:14px; border-radius:12px; border:none; outline:none; background: var(--input); color: var(--text); }
-.file-preview { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:10px; background: var(--card); border:1px solid #ffffff22; animation: fadeIn 0.5s forwards; }
-.file-preview img { max-width:50px; max-height:50px; border-radius:6px; object-fit:cover; }
-.file-preview button { background:red; border:none; color:white; border-radius:6px; padding:4px 8px; cursor:pointer; }
-.modal { position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:0.3s; z-index:400; }
+#personalitySelect { padding:10px; border-radius:8px; background:var(--input); color:var(--text); border:1px solid var(--shadow); width:100%; cursor:pointer; transition:0.3s; }
+#personalitySelect:hover { border-color:#ff0080; }
+#main { margin-left:0; margin-top:60px; height:calc(100vh - 60px); display:flex; flex-direction:column; transition:0.5s ease; }
+#chatBox { flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:15px; }
+.msg { max-width:75%; padding:16px 20px; border-radius:18px; backdrop-filter:blur(10px); word-break:break-word; opacity:0; transform:translateY(20px); animation: fadeIn 0.5s forwards; display:flex; gap:12px; align-items:flex-start; line-height:1.8; font-size:15px; }
+.user { background: linear-gradient(120deg,#00f,#0ff); color:white; margin-left:auto; box-shadow:0 4px 15px #00f5; flex-direction:row-reverse; }
+.ai { background: var(--card); border:1px solid var(--shadow); box-shadow:0 4px 15px var(--shadow); }
+.msg-content { flex:1; }
+.msg-content p { margin:8px 0; }
+.msg-content strong { color:#ff0080; }
+.msg-content ul, .msg-content ol { margin:10px 0; padding-left:25px; }
+.msg-content li { margin:5px 0; }
+.msg-content code { background:#ffffff15; padding:2px 6px; border-radius:4px; font-family:'Courier New', monospace; }
+.avatar { width:42px; height:42px; min-width:42px; border-radius:50%; background:linear-gradient(45deg,#ff0080,#00ffff); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:bold; flex-shrink:0; box-shadow:0 2px 10px #fff3; }
+#inputArea { display:flex; padding:15px; gap:10px; background: var(--sidebar); border-top:1px solid var(--shadow); }
+#prompt { flex:1; padding:15px; border-radius:12px; border:1px solid var(--shadow); outline:none; background: var(--input); color: var(--text); font-size:15px; transition:0.3s; }
+#prompt:focus { border-color:#ff0080; box-shadow:0 0 10px #ff008033; }
+#sendBtn { min-width:80px; }
+#uploadBtn { min-width:50px; }
+.file-preview { display:flex; align-items:center; gap:10px; padding:10px 15px; border-radius:12px; background: var(--card); border:1px solid var(--shadow); animation: fadeIn 0.5s forwards; margin:0 15px; }
+.file-preview img { max-width:60px; max-height:60px; border-radius:8px; object-fit:cover; }
+.file-preview button { background:#ff0080; border:none; color:white; border-radius:8px; padding:6px 12px; cursor:pointer; transition:0.3s; }
+.file-preview button:hover { background:#cc0066; }
+.modal { position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:0.3s; z-index:400; }
 .modal.show { opacity:1; pointer-events:all; }
-.modal-content { background: var(--card); padding:30px 20px; border-radius:20px; text-align:center; max-width:400px; animation: fadeIn 0.5s forwards; }
-.modal-content h2 { margin-bottom:15px; color: var(--text); }
-.modal-content p { margin:10px 0; color: var(--text); }
-.modal-content button { margin-top:20px; padding:10px 30px; background:linear-gradient(45deg,#ff0080,#7928ca); color:white; border:none; border-radius:8px; cursor:pointer; }
+.modal-content { background: var(--card); padding:35px 25px; border-radius:20px; text-align:center; max-width:450px; animation: fadeIn 0.5s forwards; box-shadow:0 10px 40px #0008; }
+.modal-content h2 { margin-bottom:20px; color: var(--text); font-size:26px; }
+.modal-content p { margin:12px 0; color: var(--text); line-height:1.6; }
+.modal-content button { margin-top:25px; padding:12px 40px; background:linear-gradient(45deg,#ff0080,#7928ca); color:white; border:none; border-radius:10px; cursor:pointer; font-weight:bold; transition:0.3s; }
+.modal-content button:hover { transform:scale(1.05); }
 #chatBox::-webkit-scrollbar { width:8px; }
 #chatBox::-webkit-scrollbar-thumb { background:#888; border-radius:4px; }
+#chatBox::-webkit-scrollbar-thumb:hover { background:#aaa; }
 #chatBox::-webkit-scrollbar-track { background:#333; }
 @keyframes fadeIn { to { opacity:1; transform:translateY(0); } }
-.suggestions { display:flex; gap:10px; padding:10px 20px; flex-wrap:wrap; }
-.suggestion-btn { background:linear-gradient(45deg,#ff0080,#7928ca); color:white; border:none; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:14px; transition:0.3s; }
-.suggestion-btn:hover { transform:scale(1.05); }
-.typing { background: var(--card); color:#888; font-style:italic; padding:10px; border-radius:20px; max-width:70%; animation: fadeIn 0.5s forwards; }
+.suggestions { display:flex; gap:10px; padding:15px 20px; flex-wrap:wrap; }
+.suggestion-btn { background:linear-gradient(45deg,#ff0080,#7928ca); color:white; border:none; padding:10px 18px; border-radius:20px; cursor:pointer; font-size:14px; transition:0.3s; box-shadow:0 2px 10px #ff008033; }
+.suggestion-btn:hover { transform:scale(1.05); box-shadow:0 4px 15px #ff008055; }
+.typing { background: var(--card); color:#888; font-style:italic; padding:12px 18px; border-radius:20px; max-width:70%; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { opacity:0.6; } 50% { opacity:1; } }
+
+/* RESPONSIVE DESIGN */
 @media(max-width:768px){ 
-  #sidebar { position:absolute; top:60px; height:calc(100vh - 60px); } 
+  #sidebar { position:fixed; top:60px; height:calc(100vh - 60px); width:85%; max-width:300px; }
   #main { margin-left:0; }
-  .msg { max-width:85%; }
+  .msg { max-width:85%; font-size:14px; padding:14px 16px; }
+  #navbar .logo { font-size:20px; }
+  .suggestions { padding:10px 15px; }
+  .suggestion-btn { padding:8px 14px; font-size:13px; }
+  #inputArea { padding:12px; }
+  #prompt { padding:12px; font-size:14px; }
+  .avatar { width:36px; height:36px; min-width:36px; font-size:16px; }
+}
+
+@media(min-width:769px) and (max-width:1200px){
+  #sidebar { width:260px; }
+  .msg { max-width:70%; }
+}
+
+@media(min-width:1201px){
+  #chatBox { padding:30px; max-width:1400px; margin:0 auto; }
+  .msg { max-width:65%; }
 }
 </style>
 </head>
 <body class="dark">
 <div id="navbar">
-  <div class="logo">🤖 Protogen AI</div>
+  <div class="logo">Protogen AI</div>
   <div id="menuBtn" class="menu">☰</div>
 </div>
 
@@ -69,32 +102,32 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
     <p><strong>Co-Founder:</strong> Davies Ongaki</p>
     <p><strong>Manager:</strong> Ramsey John Ng'aNga</p>
   </div>
-  <button id="modeToggle" class="button">🌓 Toggle Light/Dark</button>
+  <button id="modeToggle" class="button">Toggle Light/Dark</button>
   <select id="personalitySelect">
-    <option value="lutherking">✨ Lutherking Mode</option>
-    <option value="ramsey">🔷 Ramsey Mode</option>
+    <option value="lutherking">Lutherking Mode</option>
+    <option value="ramsey">Ramsey Mode</option>
   </select>
-  <button id="aboutBtn" class="button">ℹ️ About Us</button>
+  <button id="aboutBtn" class="button">About Us</button>
 </div>
 
 <div id="main">
   <div id="chatBox">
     <div class="msg ai">
-      <div class="avatar">🤖</div>
+      <div class="avatar">P</div>
       <div>
-        <strong>Welcome to Protogen AI! 🚀</strong><br>
-        I can help with: Math, Science, History, Geography, Technology, Programming, and more!<br>
-        Try asking me anything or click a suggestion below!
+        <strong>Welcome to Protogen AI!</strong><br>
+        I'm an advanced knowledge system ready to answer your questions on any topic.<br>
+        Ask me anything or click a suggestion below to get started!
       </div>
     </div>
   </div>
   <div class="suggestions" id="suggestions">
-    <button class="suggestion-btn" onclick="askSuggestion('Solve 2x+3=7')">📐 Solve Math</button>
-    <button class="suggestion-btn" onclick="askSuggestion('What is photosynthesis?')">🌱 Science</button>
-    <button class="suggestion-btn" onclick="askSuggestion('Capital of Kenya?')">🌍 Geography</button>
-    <button class="suggestion-btn" onclick="askSuggestion('Explain AI')">🤖 Technology</button>
-    <button class="suggestion-btn" onclick="askSuggestion('What time is it?')">⏰ Time</button>
-    <button class="suggestion-btn" onclick="askSuggestion('Help')">❓ Help</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Solve 2x+3=7')">Solve Math</button>
+    <button class="suggestion-btn" onclick="askSuggestion('What is photosynthesis?')">Science</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Capital of Kenya?')">Geography</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Explain AI')">Technology</button>
+    <button class="suggestion-btn" onclick="askSuggestion('What time is it?')">Time</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Help')">Help</button>
   </div>
   <div id="inputArea">
     <input id="prompt" type="text" placeholder="Ask anything... Protogen AI answers everything..." />
@@ -108,11 +141,11 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
 <div id="aboutModal" class="modal">
   <div class="modal-content">
     <h2>About Protogen AI</h2>
-    <p><strong>Founder & CEO:</strong> Martin Lutherking Owino</p>
-    <p><strong>Co-Founder:</strong> Davies Ongaki</p>
-    <p><strong>Manager:</strong> Ramsey John Ng'aNga</p>
+    <p><strong>Lead Developer (80%):</strong> Martin Lutherking Owino - Founder & CEO</p>
+    <p><strong>Co-Developer (10%):</strong> Davies Ongaki - Co-Founder</p>
+    <p><strong>Developer (10%):</strong> Ramsey John Ng'aNga - Manager</p>
     <p><strong>Company:</strong> HECO-AFRICA</p>
-    <p style="margin-top:15px;">Advanced AI assistant capable of answering questions on science, math, history, technology, and more!</p>
+    <p style="margin-top:15px;">Protogen AI is an advanced knowledge system designed to answer questions across all fields of human knowledge. Created by a talented team of developers dedicated to making information accessible to everyone.</p>
     <button id="closeAbout">Close</button>
   </div>
 </div>
@@ -126,12 +159,27 @@ async function generateAIResponse(q, personality = "lutherking", files = []) {
   const qLower = q.toLowerCase();
 
   const tone = personality === "ramsey" 
-    ? "🔷 Ramsey Mode: " 
-    : "✨ Lutherking Mode: ";
+    ? "Ramsey: " 
+    : "Lutherking: ";
 
   // FOUNDER QUESTIONS
-  if (qLower.includes("who created") || qLower.includes("who made") || qLower.includes("founder")) {
-    return `${tone}Protogen AI was built by Martin Lutherking Owino (Founder & CEO), co-founded by Davies Ongaki, and managed by Ramsey John Ng'ang'a under HECO-AFRICA.`;
+  if (qLower.includes("who created") || qLower.includes("who made") || qLower.includes("who built") || qLower.includes("founder")) {
+    return `${tone}Protogen AI was created by Martin Lutherking Owino (80% - Lead Developer & Founder), with Davies Ongaki contributing 10% and Ramsey John Ng'ang'a contributing 10%. Built under HECO-AFRICA.`;
+  }
+
+  // WHO IS MARTIN LUTHERKING OWINO
+  if (qLower.includes("martin lutherking owino") || qLower.includes("lutherking owino") || qLower.includes("martin owino")) {
+    return `${tone}Martin Lutherking Owino is the brilliant Founder & CEO of HECO-AFRICA and the lead developer of Protogen AI. He contributed 80% to the development of this advanced system. A visionary in AI technology and software development, he's dedicated to building innovative solutions for the future.`;
+  }
+
+  // DAVIES ONGAKI
+  if (qLower.includes("davies ongaki") || qLower.includes("davies")) {
+    return `${tone}Davies Ongaki is the Co-Founder of HECO-AFRICA and contributed 10% to Protogen AI's development. He plays a crucial role in the strategic direction and innovation of the company.`;
+  }
+
+  // RAMSEY
+  if (qLower.includes("ramsey") && !qLower.includes("mode")) {
+    return `${tone}Ramsey John Ng'ang'a is the Manager at HECO-AFRICA and contributed 10% to Protogen AI's development. He manages operations and ensures smooth functionality of all systems.`;
   }
 
   // ADVANCED MATH CALCULATIONS
@@ -153,119 +201,216 @@ async function generateAIResponse(q, personality = "lutherking", files = []) {
 
   // SCIENCE TOPICS
   if (qLower.includes("photosynthesis")) {
-    return `${tone}Photosynthesis is the process where plants use sunlight, water, and CO2 to produce glucose (C6H12O6) and oxygen. Formula: 6CO2 + 6H2O + light → C6H12O6 + 6O2`;
+    return `${tone}Photosynthesis is the remarkable process by which plants, algae, and some bacteria convert light energy into chemical energy. During this process, organisms use sunlight, water (H₂O), and carbon dioxide (CO₂) to produce glucose (C₆H₁₂O₆) and oxygen (O₂).\n\nThe chemical equation is: 6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂\n\nThis process occurs in two main stages:\n• Light-dependent reactions (in the thylakoid membranes)\n• Light-independent reactions or Calvin cycle (in the stroma)\n\nPhotosynthesis is fundamental to life on Earth, as it produces the oxygen we breathe and forms the base of most food chains.`;
   }
   if (qLower.includes("gravity")) {
-    return `${tone}Gravity is a fundamental force attracting objects with mass. Earth's gravity is 9.8 m/s². Newton's law: F = G(m1×m2)/r²`;
+    return `${tone}Gravity is one of the four fundamental forces of nature, responsible for the attraction between objects with mass. It's the force that keeps us on the ground, holds the Moon in orbit around Earth, and governs the motion of galaxies.\n\nKey points about gravity:\n• Earth's gravitational acceleration: 9.8 m/s² (or 32 ft/s²)\n• Newton's law: F = G(m₁×m₂)/r² where G is the gravitational constant\n• Einstein's general relativity describes gravity as the curvature of spacetime caused by mass and energy\n• Gravity is the weakest of the four fundamental forces, yet it dominates at large scales\n\nInterestingly, we still don't fully understand why gravity is so much weaker than the other forces—this is called the "hierarchy problem" in physics.`;
   }
   if (qLower.includes("dna") || qLower.includes("genetics")) {
-    return `${tone}DNA (Deoxyribonucleic Acid) is the genetic blueprint of life. It's a double helix containing genes that code for proteins.`;
+    return `${tone}DNA (Deoxyribonucleic Acid) is the hereditary material that carries the genetic instructions for all known living organisms. It's one of the most important molecules in biology.\n\nStructure and Function:\n• Double helix structure discovered by Watson and Crick in 1953\n• Made of four nucleotides: Adenine (A), Thymine (T), Guanine (G), and Cytosine (C)\n• A always pairs with T, and G always pairs with C (complementary base pairing)\n• Genes are segments of DNA that code for specific proteins\n• Humans have approximately 3 billion base pairs and 20,000-25,000 genes\n\nDNA replication ensures genetic information is passed from cell to cell and from parent to offspring. Mutations in DNA can lead to genetic variation, evolution, or disease.`;
   }
   if (qLower.includes("atom") || qLower.includes("molecule")) {
-    return `${tone}Atoms are the smallest units of matter, containing protons, neutrons, and electrons. Molecules are atoms bonded together.`;
+    return `${tone}Atoms are the smallest units of matter, composed of protons (positive), neutrons (neutral) in the nucleus, and electrons (negative) orbiting around. Molecules form when atoms bond chemically, like H2O (water) or CO2 (carbon dioxide).`;
   }
   if (qLower.includes("evolution")) {
-    return `${tone}Evolution is the process by which species change over time through natural selection, as described by Charles Darwin.`;
+    return `${tone}Evolution is the process by which species change over generations through natural selection, genetic drift, and mutation. Charles Darwin's theory explains how organisms adapt to their environment over time, leading to the diversity of life we see today.`;
   }
   if (qLower.includes("cell")) {
-    return `${tone}Cells are the basic units of life. Prokaryotic cells lack a nucleus, while eukaryotic cells have a membrane-bound nucleus.`;
+    return `${tone}Cells are the basic structural and functional units of all living organisms. Prokaryotic cells (bacteria) lack a nucleus, while eukaryotic cells (plants, animals) have membrane-bound organelles including a nucleus containing DNA.`;
+  }
+  if (qLower.includes("mitochondria")) {
+    return `${tone}Mitochondria are the "powerhouses" of eukaryotic cells. They produce ATP through cellular respiration, converting glucose and oxygen into energy. They have their own DNA, suggesting they were once independent organisms.`;
+  }
+  if (qLower.includes("energy") && qLower.includes("law")) {
+    return `${tone}The Law of Conservation of Energy states that energy cannot be created or destroyed, only transformed from one form to another. The First Law of Thermodynamics expresses this fundamental principle of physics.`;
   }
 
   // HISTORY
   if (qLower.includes("world war") || qLower.includes("ww1") || qLower.includes("ww2")) {
-    return `${tone}World War I (1914-1918) and World War II (1939-1945) were global conflicts that reshaped the world order.`;
+    return `${tone}World War I (1914-1918) involved the Allied Powers vs Central Powers, resulting in 17+ million deaths. World War II (1939-1945) was fought between the Allies and Axis powers, resulting in 70-85 million deaths. These conflicts reshaped global politics, economics, and society.`;
   }
   if (qLower.includes("independence") && qLower.includes("kenya")) {
-    return `${tone}Kenya gained independence from Britain on December 12, 1963, with Jomo Kenyatta as the first Prime Minister.`;
+    return `${tone}Kenya gained independence from British colonial rule on December 12, 1963. Jomo Kenyatta became the first Prime Minister and later the first President. The Mau Mau uprising (1952-1960) was crucial in the independence struggle.`;
   }
   if (qLower.includes("napoleon")) {
-    return `${tone}Napoleon Bonaparte was a French military leader who became Emperor of France (1804-1814/1815) and conquered much of Europe.`;
+    return `${tone}Napoleon Bonaparte (1769-1821) was a French military genius who became Emperor of France. He conquered much of Europe but was ultimately defeated at Waterloo in 1815. His Napoleonic Code influenced legal systems worldwide.`;
+  }
+  if (qLower.includes("ancient egypt") || qLower.includes("pyramids")) {
+    return `${tone}Ancient Egypt was one of the world's greatest civilizations (3100 BCE - 30 BCE). Famous for pyramids, pharaohs, hieroglyphics, and mummification. The Great Pyramid of Giza is one of the Seven Wonders of the Ancient World.`;
+  }
+  if (qLower.includes("renaissance")) {
+    return `${tone}The Renaissance (14th-17th century) was a period of cultural rebirth in Europe. It saw advances in art (da Vinci, Michelangelo), science (Galileo), and philosophy. It marked the transition from medieval to modern times.`;
   }
 
   // GEOGRAPHY
   if (qLower.includes("capital") || qLower.includes("country")) {
-    if (qLower.includes("kenya")) return `${tone}Kenya's capital is Nairobi. Population: ~5 million. Major economic hub of East Africa.`;
-    if (qLower.includes("france")) return `${tone}France's capital is Paris, known as the "City of Light".`;
-    if (qLower.includes("japan")) return `${tone}Japan's capital is Tokyo, one of the world's largest metropolitan areas.`;
-    if (qLower.includes("usa") || qLower.includes("america")) return `${tone}USA's capital is Washington D.C., located between Maryland and Virginia.`;
-    if (qLower.includes("uk") || qLower.includes("england")) return `${tone}UK's capital is London, a global financial center.`;
-    if (qLower.includes("germany")) return `${tone}Germany's capital is Berlin.`;
-    if (qLower.includes("china")) return `${tone}China's capital is Beijing.`;
+    if (qLower.includes("kenya")) return `${tone}Kenya's capital is Nairobi, population ~5 million. It's the economic hub of East Africa, known for its wildlife, tech innovation (Silicon Savannah), and diverse culture.`;
+    if (qLower.includes("france")) return `${tone}France's capital is Paris, the "City of Light". Population ~2.2 million (city), ~12 million (metro). Famous for the Eiffel Tower, Louvre Museum, and rich cultural heritage.`;
+    if (qLower.includes("japan")) return `${tone}Japan's capital is Tokyo, the world's most populous metropolitan area with ~37 million people. It's a global center for technology, finance, and culture.`;
+    if (qLower.includes("usa") || qLower.includes("america")) return `${tone}USA's capital is Washington D.C., located between Maryland and Virginia. It houses the White House, Capitol Building, and Supreme Court.`;
+    if (qLower.includes("uk") || qLower.includes("england")) return `${tone}United Kingdom's capital is London, population ~9 million. A global financial center and cultural hub, home to landmarks like Big Ben and Buckingham Palace.`;
+    if (qLower.includes("germany")) return `${tone}Germany's capital is Berlin, population ~3.7 million. Famous for its history, culture, and role in European politics.`;
+    if (qLower.includes("china")) return `${tone}China's capital is Beijing, population ~21 million. One of the world's oldest cities and China's political, cultural, and educational center.`;
+    if (qLower.includes("india")) return `${tone}India's capital is New Delhi, part of the National Capital Territory of Delhi. Population ~32 million (metro). Seat of government and cultural heritage.`;
+    if (qLower.includes("russia")) return `${tone}Russia's capital is Moscow, population ~12 million. The political, economic, and cultural center of Russia, home to the Kremlin and Red Square.`;
   }
   if (qLower.includes("ocean") || qLower.includes("sea")) {
-    return `${tone}The five oceans are: Pacific (largest), Atlantic, Indian, Southern, and Arctic. They cover 71% of Earth's surface.`;
+    return `${tone}The five oceans are: Pacific (largest, 165 million km²), Atlantic, Indian, Southern, and Arctic (smallest). Oceans cover 71% of Earth's surface and contain 97% of Earth's water.`;
+  }
+  if (qLower.includes("continent")) {
+    return `${tone}The seven continents are: Asia (largest), Africa, North America, South America, Antarctica, Europe, and Australia/Oceania. Asia contains ~60% of the world's population.`;
+  }
+  if (qLower.includes("mount everest") || qLower.includes("highest mountain")) {
+    return `${tone}Mount Everest is the world's highest mountain at 8,849 meters (29,032 feet) above sea level. Located in the Himalayas on the Nepal-Tibet border. First climbed by Edmund Hillary and Tenzing Norgay in 1953.`;
   }
 
   // TECHNOLOGY
-  if (qLower.includes("ai") || qLower.includes("artificial intelligence")) {
-    return `${tone}AI (Artificial Intelligence) enables machines to learn, reason, and solve problems. It includes ML, NLP, and computer vision.`;
+  if (qLower.includes("artificial intelligence") || (qLower.includes("ai") && !qLower.includes("protogen"))) {
+    return `${tone}Artificial Intelligence (AI) is the simulation of human intelligence by machines. It includes machine learning, deep learning, natural language processing, and computer vision. AI is transforming industries from healthcare to finance.`;
   }
   if (qLower.includes("blockchain")) {
-    return `${tone}Blockchain is a decentralized ledger technology used in cryptocurrencies like Bitcoin. It ensures transparency and security.`;
+    return `${tone}Blockchain is a decentralized, distributed ledger technology that records transactions across multiple computers. Used in cryptocurrencies like Bitcoin and Ethereum. It ensures transparency, security, and immutability of data.`;
   }
   if (qLower.includes("quantum computing")) {
-    return `${tone}Quantum computers use qubits instead of bits, leveraging superposition and entanglement for exponential processing power.`;
+    return `${tone}Quantum computers use quantum bits (qubits) instead of classical bits. They leverage quantum superposition and entanglement to solve complex problems exponentially faster than classical computers. Applications include cryptography, drug discovery, and optimization.`;
   }
   if (qLower.includes("internet")) {
-    return `${tone}The Internet is a global network connecting billions of devices, enabling communication and information sharing worldwide.`;
+    return `${tone}The Internet is a global network of interconnected computers and servers. Created in the 1960s-70s, it now connects billions of devices worldwide, enabling communication, commerce, and information sharing. The World Wide Web was invented by Tim Berners-Lee in 1989.`;
+  }
+  if (qLower.includes("5g") || qLower.includes("network")) {
+    return `${tone}5G is the fifth generation of cellular network technology. It offers faster speeds (up to 20 Gbps), lower latency, and greater capacity than 4G. Enables IoT, autonomous vehicles, and smart cities.`;
   }
 
   // PROGRAMMING
-  if (qLower.includes("python") || qLower.includes("code") || qLower.includes("programming")) {
-    return `${tone}Python is a high-level programming language known for simplicity and versatility. Used in AI, web dev, data science, and more.`;
+  if (qLower.includes("python")) {
+    return `${tone}Python is a high-level, interpreted programming language that has become one of the most popular languages in the world. Created by Guido van Rossum and first released in 1991, Python emphasizes code readability and simplicity.\n\nKey Features:\n• Clean, readable syntax that resembles natural language\n• Dynamically typed (no need to declare variable types)\n• Extensive standard library and third-party packages (PyPI)\n• Object-oriented, functional, and procedural programming support\n• Cross-platform compatibility\n\nCommon Uses:\n• Web development (Django, Flask, FastAPI)\n• Data science and machine learning (NumPy, Pandas, TensorFlow, PyTorch)\n• Automation and scripting\n• Scientific computing\n• Game development\n• Desktop applications\n\nPython's philosophy is captured in "The Zen of Python": Beautiful is better than ugly, explicit is better than implicit, simple is better than complex.`;
   }
   if (qLower.includes("javascript")) {
-    return `${tone}JavaScript is a programming language that powers interactive web pages. It runs in browsers and on servers (Node.js).`;
+    return `${tone}JavaScript is a dynamic programming language primarily used for web development. Created by Brendan Eich in 1995. Runs in browsers and on servers (Node.js). Essential for interactive websites and modern web applications.`;
+  }
+  if (qLower.includes("html") || qLower.includes("css")) {
+    return `${tone}HTML (HyperText Markup Language) structures web content, while CSS (Cascading Style Sheets) styles it. Together with JavaScript, they form the foundation of web development. HTML5 and CSS3 are the latest versions.`;
   }
 
   // CURRENT EVENTS (2025)
-  if (qLower.includes("trump") || qLower.includes("president")) {
-    return `${tone}Donald Trump won the 2024 US Presidential election and is currently serving as president in 2025.`;
+  if (qLower.includes("trump") || qLower.includes("president") && qLower.includes("us")) {
+    return `${tone}Donald Trump won the 2024 US Presidential election and is currently serving as the 47th President of the United States in 2025.`;
   }
-  if (qLower.includes("news") || qLower.includes("latest")) {
-    return `${tone}For the latest news, I recommend checking major news sources. AI, climate change, and geopolitics are major 2025 topics.`;
+  if (qLower.includes("news") || qLower.includes("latest") || qLower.includes("2025")) {
+    return `${tone}In 2025, major global trends include: rapid AI advancement, climate change initiatives, geopolitical shifts, space exploration progress, and continued digital transformation. For specific current events, I recommend checking major news sources.`;
+  }
+  if (qLower.includes("climate change") || qLower.includes("global warming")) {
+    return `${tone}Climate change refers to long-term shifts in global temperatures and weather patterns. Primarily caused by human activities releasing greenhouse gases (CO2, methane). Effects include rising sea levels, extreme weather, and ecosystem disruption. Solutions include renewable energy and carbon reduction.`;
   }
 
   // MATH CONCEPTS
   if (qLower.includes("pythagorean")) {
-    return `${tone}Pythagorean Theorem: a² + b² = c² (for right triangles). Used to find the hypotenuse.`;
+    return `${tone}Pythagorean Theorem: a² + b² = c² (for right triangles). Where 'c' is the hypotenuse and 'a' and 'b' are the other two sides. Discovered by ancient Greek mathematician Pythagoras. Essential in geometry, physics, and engineering.`;
   }
   if (qLower.includes("quadratic")) {
-    return `${tone}Quadratic formula: x = [-b ± √(b²-4ac)] / 2a. Solves equations in form ax² + bx + c = 0`;
+    return `${tone}Quadratic formula: x = [-b ± √(b²-4ac)] / 2a. Used to solve equations in the form ax² + bx + c = 0. The discriminant (b²-4ac) determines the number of real solutions: positive = 2 solutions, zero = 1 solution, negative = no real solutions.`;
   }
   if (qLower.includes("pi") || qLower.includes("3.14")) {
-    return `${tone}Pi (π) ≈ 3.14159... It's the ratio of a circle's circumference to its diameter. Used in geometry and trigonometry.`;
+    return `${tone}Pi (π) ≈ 3.14159265359... is an irrational number representing the ratio of a circle's circumference to its diameter. It appears throughout mathematics and physics. Celebrated on Pi Day (March 14th).`;
+  }
+  if (qLower.includes("fibonacci")) {
+    return `${tone}The Fibonacci sequence is: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34... Each number is the sum of the two preceding ones. Appears in nature (flower petals, shells, galaxies). The ratio approaches the golden ratio (φ ≈ 1.618).`;
+  }
+  if (qLower.includes("calculus") || qLower.includes("derivative")) {
+    return `${tone}Calculus is the mathematics of change and motion. Differential calculus studies rates of change (derivatives), while integral calculus studies accumulation (integrals). Developed independently by Newton and Leibniz in the 17th century.`;
   }
 
-  // GREETINGS
+  // ECONOMICS & BUSINESS
+  if (qLower.includes("gdp") || qLower.includes("economy")) {
+    return `${tone}GDP (Gross Domestic Product) measures the total value of goods and services produced in a country. It's a key indicator of economic health. The largest economies (2024-2025) are: USA, China, Japan, Germany, and India.`;
+  }
+  if (qLower.includes("cryptocurrency") || qLower.includes("bitcoin")) {
+    return `${tone}Cryptocurrency is digital/virtual currency using cryptography for security. Bitcoin (created 2009 by Satoshi Nakamoto) was the first. Other major cryptocurrencies include Ethereum, Binance Coin, and Cardano. They operate on blockchain technology.`;
+  }
+
+  // SPACE & ASTRONOMY
+  if (qLower.includes("solar system") || qLower.includes("planets")) {
+    return `${tone}Our solar system consists of the Sun and 8 planets: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune. Also includes dwarf planets (Pluto), moons, asteroids, and comets. The Sun contains 99.86% of the system's mass.`;
+  }
+  if (qLower.includes("black hole")) {
+    return `${tone}Black holes are regions of spacetime where gravity is so strong that nothing, not even light, can escape. Formed when massive stars collapse. The event horizon is the point of no return. First image of a black hole was captured in 2019.`;
+  }
+  if (qLower.includes("big bang")) {
+    return `${tone}The Big Bang Theory explains the origin of the universe ~13.8 billion years ago. The universe began from an infinitely dense point and has been expanding ever since. Evidence includes cosmic microwave background radiation and redshift of galaxies.`;
+  }
+
+  // BIOLOGY & HEALTH
+  if (qLower.includes("vaccine") || qLower.includes("immunization")) {
+    return `${tone}Vaccines train the immune system to recognize and fight pathogens without causing disease. They contain weakened or inactive parts of organisms. Vaccines have eliminated smallpox and nearly eliminated polio, saving millions of lives.`;
+  }
+  if (qLower.includes("cancer")) {
+    return `${tone}Cancer is a group of diseases involving abnormal cell growth that can invade other tissues. Caused by genetic mutations from various factors (smoking, radiation, viruses). Treatments include surgery, chemotherapy, radiation, and immunotherapy.`;
+  }
+  if (qLower.includes("brain") || qLower.includes("neuron")) {
+    return `${tone}The human brain contains ~86 billion neurons that communicate via electrical and chemical signals. It controls thoughts, memory, emotions, and bodily functions. Different regions specialize in different functions (frontal lobe = reasoning, hippocampus = memory).`;
+  }
+
+  // GREETINGS & CONVERSATION
   if (qLower.includes("hello") || qLower.includes("hi") || qLower.includes("hey")) {
-    return `${tone}Hello! Protogen AI is fully operational. Ask me anything - science, math, history, tech, current events, and more!`;
+    return `${tone}Hello! Protogen AI is ready to assist. I can answer questions about science, math, history, technology, geography, and much more. What would you like to know?`;
   }
   if (qLower.includes("how are you")) {
-    return `${tone}All systems optimal! Running at peak performance. Ready to assist with any question!`;
+    return `${tone}All systems running optimally! Ready to help with any questions you have. How can I assist you today?`;
   }
   if (qLower.includes("thank")) {
-    return `${tone}You're welcome! Happy to help anytime. Feel free to ask more questions!`;
+    return `${tone}You're very welcome! Feel free to ask anything else. I'm here to help!`;
+  }
+  if (qLower.includes("bye") || qLower.includes("goodbye")) {
+    return `${tone}Goodbye! Come back anytime you need information or assistance. Have a great day!`;
   }
 
   // FILE HANDLING
   if (files.length > 0) {
-    return `${tone}I've received ${files.length} file(s). While I can acknowledge uploads, my current capabilities are focused on text-based Q&A.`;
+    return `${tone}I've received ${files.length} file(s). Image analysis capabilities are currently in development. For now, I specialize in text-based knowledge and problem-solving.`;
   }
 
   // TIME/DATE
   if (qLower.includes("time") || qLower.includes("date") || qLower.includes("today")) {
     const now = new Date();
-    return `${tone}Current date/time: ${now.toLocaleString('en-US', { timeZone: 'Africa/Nairobi' })} (Nairobi time)`;
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric', 
+      hour: '2-digit', 
+      minute: '2-digit',
+      timeZone: 'Africa/Nairobi' 
+    };
+    return `${tone}Current date and time in Nairobi: ${now.toLocaleString('en-US', options)}`;
   }
 
-  // HELP
-  if (qLower.includes("help") || qLower.includes("what can you do")) {
-    return `${tone}I can help with:\n📐 Math (calculations, formulas)\n🧪 Science (biology, chemistry, physics)\n📚 History (events, figures)\n🌍 Geography (capitals, countries)\n💻 Technology (AI, programming)\n⏰ Current time/date\n\nJust ask anything!`;
+  // HELP & CAPABILITIES
+  if (qLower.includes("help") || qLower.includes("what can you do") || qLower.includes("capabilities")) {
+    return `${tone}I'm designed to be a comprehensive knowledge system that can help you with a wide range of topics. Here's what I can assist you with:\n\n• Mathematics: From basic arithmetic to calculus, algebra, geometry, statistics, and mathematical proofs\n• Science: Biology, chemistry, physics, astronomy, earth science, and more\n• History: World history, civilizations, historical figures, wars, and cultural movements\n• Geography: Countries, capitals, physical features, climate, and demographics\n• Technology: Programming, AI, computer science, blockchain, cybersecurity\n• Current Events: Updates on 2025 news, politics, and global developments\n• Philosophy: Ethics, logic, metaphysics, and major philosophical traditions\n• Literature: Authors, literary movements, analysis, and recommendations\n• Economics: Markets, theories, business concepts, and financial systems\n• Health & Medicine: General health information, diseases, treatments (not medical advice)\n\nI aim to provide detailed, accurate, and helpful responses. Just ask your question, and I'll do my best to give you a comprehensive answer!`;
   }
 
-  // DEFAULT INTELLIGENT RESPONSE
-  return `${tone}Interesting question about "${q}". While I have extensive knowledge, I recommend being more specific or trying: math problems, science concepts, historical events, technology topics, or general knowledge questions. I'm here to help!`;
+  // LANGUAGE & LITERATURE
+  if (qLower.includes("shakespeare")) {
+    return `${tone}William Shakespeare (1564-1616) was an English playwright and poet, considered the greatest writer in the English language. Famous works include Hamlet, Romeo and Juliet, Macbeth, and A Midsummer Night's Dream. He wrote 37 plays and 154 sonnets.`;
+  }
+
+  // PHILOSOPHY
+  if (qLower.includes("philosophy") || qLower.includes("plato") || qLower.includes("aristotle")) {
+    return `${tone}Philosophy is the study of fundamental questions about existence, knowledge, values, and reality. Ancient Greek philosophers like Socrates, Plato, and Aristotle laid foundations for Western philosophy. Major branches include metaphysics, epistemology, ethics, and logic.`;
+  }
+
+  // DEFAULT INTELLIGENT RESPONSE - Enhanced like Claude
+  const topics = [
+    'mathematics and problem-solving',
+    'scientific concepts and discoveries',
+    'historical events and their significance',
+    'technological innovations',
+    'philosophical questions',
+    'geographical information',
+    'cultural and literary topics'
+  ];
+  
+  return `${tone}I'd be happy to help you explore "${q}" in more depth. To give you the most useful response, could you provide a bit more context about what specifically interests you?\n\nFor example, if you're asking about:\n• A concept - I can explain it comprehensively\n• A problem - I can help you solve it step-by-step\n• A comparison - I can analyze different perspectives\n• Background information - I can provide detailed context\n\nI have extensive knowledge across ${topics.join(', ')}, and many other domains. Feel free to ask follow-up questions or rephrase your query, and I'll provide a thorough answer!`;
 }
 
 
@@ -275,6 +420,31 @@ async function generateAIResponse(q, personality = "lutherking", files = []) {
 // ============================================================================
 let currentPersonality = "lutherking";
 let uploadedFiles = [];
+
+
+
+// ============================================================================
+// FORMAT RESPONSE FOR BEAUTIFUL DISPLAY
+// ============================================================================
+function formatResponse(text) {
+  // Split into paragraphs
+  let formatted = text.split('\n\n').map(para => {
+    // Check if it's a list
+    if (para.includes('\n•') || para.includes('\n-')) {
+      const lines = para.split('\n');
+      const intro = lines[0];
+      const items = lines.slice(1).filter(l => l.trim());
+      return `<p>${intro}</p><ul>${items.map(item => `<li>${item.replace(/^[•\-]\s*/, '')}</li>`).join('')}</ul>`;
+    }
+    return `<p>${para}</p>`;
+  }).join('');
+  
+  // Make formulas stand out
+  formatted = formatted.replace(/([A-Z][a-z]*\s*=\s*[^\s]+)/g, '<code>$1</code>');
+  formatted = formatted.replace(/\n/g, '<br>');
+  
+  return formatted;
+}
 
 
 
@@ -289,10 +459,11 @@ function displayMessage(sender, text) {
 
   const avatar = document.createElement("div");
   avatar.className = "avatar";
-  avatar.textContent = sender === "user" ? "👤" : "🤖";
+  avatar.textContent = sender === "user" ? "U" : "P";
 
   const bubble = document.createElement("div");
-  bubble.innerHTML = text.replace(/\n/g, '<br>');
+  bubble.className = "msg-content";
+  bubble.innerHTML = formatResponse(text);
 
   msg.appendChild(avatar);
   msg.appendChild(bubble);
@@ -326,7 +497,7 @@ document.getElementById("sendBtn").addEventListener("click", async () => {
   const chatBox = document.getElementById("chatBox");
   const typing = document.createElement("div");
   typing.className = "typing";
-  typing.textContent = "🤖 Protogen AI is thinking...";
+  typing.textContent = "Protogen is thinking...";
   chatBox.appendChild(typing);
   chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -356,7 +527,7 @@ document.getElementById("prompt").addEventListener("keypress", (e) => {
 // ============================================================================
 document.getElementById("personalitySelect").addEventListener("change", (e) => {
   currentPersonality = e.target.value;
-  displayMessage("ai", `Personality switched to ${e.target.value === "ramsey" ? "🔷 Ramsey" : "✨ Lutherking"} mode!`);
+  displayMessage("ai", `Personality switched to ${e.target.value === "ramsey" ? "Ramsey" : "Lutherking"} mode!`);
 });
 
 
@@ -368,7 +539,7 @@ document.getElementById("modeToggle").addEventListener("click", () => {
   document.body.classList.toggle("dark");
   document.body.classList.toggle("light");
   const mode = document.body.classList.contains("dark") ? "Dark" : "Light";
-  displayMessage("ai", `Switched to ${mode} mode! 🌓`);
+  displayMessage("ai", `Switched to ${mode} mode!`);
 });
 
 
@@ -377,7 +548,17 @@ document.getElementById("modeToggle").addEventListener("click", () => {
 // SIDEBAR TOGGLE
 // ============================================================================
 document.getElementById("menuBtn").addEventListener("click", () => {
-  document.getElementById("sidebar").classList.toggle("closed");
+  document.getElementById("sidebar").classList.toggle("open");
+});
+
+// Close sidebar when clicking outside on mobile
+document.addEventListener("click", (e) => {
+  const sidebar = document.getElementById("sidebar");
+  const menuBtn = document.getElementById("menuBtn");
+  if (window.innerWidth <= 768 && sidebar.classList.contains("open") && 
+      !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+    sidebar.classList.remove("open");
+  }
 });
 
 
