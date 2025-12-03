@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Protogen AI - Enhanced</title>
 <style>
 /* COMPLETE CSS */
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
-body { overflow:auto; transition:0.3s; background:#0d0d0f; color:#f1f1f1; }
+body { overflow:hidden; transition:0.3s; background:#0d0d0f; color:#f1f1f1; }
 body.light { --bg:#f5f5f5; --text:#111; --card:#ffffffcc; --sidebar:#ffffff; --input:#eee; }
 body.dark { --bg:#0d0d0f; --text:#f1f1f1; --card:#1a1a1ccc; --sidebar:#111; --input:#222; }
 body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
@@ -23,15 +23,15 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
 .button:hover, #sendBtn:hover, #uploadBtn:hover, #modeToggle:hover { transform:scale(1.05); }
 @keyframes gradientBG { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
 #personalitySelect { padding:10px; border-radius:8px; background:#333; color:white; border:none; width:100%; }
-#main { margin-left:280px; margin-top:60px; min-height:100vh; display:flex; flex-direction:column; }
+#main { margin-left:280px; margin-top:60px; height:calc(100vh - 60px); display:flex; flex-direction:column; transition:0.5s ease; }
 #sidebar.closed ~ #main { margin-left:0; }
-#chatBox { flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; min-height: 0; }
+#chatBox { flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; }
 .msg { max-width:70%; padding:14px 18px; border-radius:20px; backdrop-filter:blur(10px); word-break:break-word; opacity:0; transform:translateY(20px); animation: fadeIn 0.5s forwards; display:flex; gap:10px; align-items:flex-start; }
 .user { background: linear-gradient(120deg,#00f,#0ff); color:white; margin-left:auto; box-shadow:0 4px 12px #00f5; flex-direction:row-reverse; }
 .ai { background: var(--card); border:1px solid #ffffff22; box-shadow:0 4px 12px #fff2; }
 .avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(45deg,#ff0080,#00ffff); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-#inputArea { display:flex; padding:12px; gap:10px; background: var(--sidebar); flex-shrink: 0; }
-#prompt { flex:1; padding:14px; border-radius:12px; border:none; outline:none; background: var(--input); color: var(--text); font-size:1.1rem; }
+#inputArea { display:flex; padding:12px; gap:10px; background: var(--sidebar); }
+#prompt { flex:1; padding:14px; border-radius:12px; border:none; outline:none; background: var(--input); color: var(--text); }
 .file-preview { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:10px; background: var(--card); border:1px solid #ffffff22; animation: fadeIn 0.5s forwards; }
 .file-preview img { max-width:50px; max-height:50px; border-radius:6px; object-fit:cover; }
 .file-preview button { background:red; border:none; color:white; border-radius:6px; padding:4px 8px; cursor:pointer; }
@@ -45,64 +45,70 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
 #chatBox::-webkit-scrollbar-thumb { background:#888; border-radius:4px; }
 #chatBox::-webkit-scrollbar-track { background:#333; }
 @keyframes fadeIn { to { opacity:1; transform:translateY(0); } }
+.suggestions { display:flex; gap:10px; padding:10px 20px; flex-wrap:wrap; }
+.suggestion-btn { background:linear-gradient(45deg,#ff0080,#7928ca); color:white; border:none; padding:8px 16px; border-radius:20px; cursor:pointer; font-size:14px; transition:0.3s; }
+.suggestion-btn:hover { transform:scale(1.05); }
 .typing { background: var(--card); color:#888; font-style:italic; padding:10px; border-radius:20px; max-width:70%; animation: fadeIn 0.5s forwards; }
-
-@media (max-width: 768px) {
-  body { overflow: auto !important; }
-  #sidebar { transform: translateX(-100%); z-index: 3000; }
-  #sidebar.closed { transform: translateX(-100%); }
-  #main { margin-left: 0 !important; min-height: 100vh; display: flex; flex-direction: column; }
-  #chatBox { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
-  #inputArea { flex-shrink: 0; }
-  .msg { max-width: 85%; }
+@media(max-width:768px){ 
+  #sidebar { position:absolute; top:60px; height:calc(100vh - 60px); } 
+  #main { margin-left:0; }
+  .msg { max-width:85%; }
 }
 </style>
 </head>
 <body class="dark">
 <div id="navbar">
   <div class="logo">🤖 Protogen AI</div>
-  <div id="menuBtn" class="menu" role="button" aria-label="Toggle menu" tabindex="0">☰</div>
+  <div id="menuBtn" class="menu">☰</div>
 </div>
 
-<div id="sidebar" class="closed" aria-label="Sidebar menu" role="navigation">
+<div id="sidebar">
   <div class="title">Protogen AI</div>
   <div class="sidebar-info">
-    <p><strong>Founder &amp; CEO:</strong> Martin Lutherking Owino</p>
+    <p><strong>Founder & CEO:</strong> Martin Lutherking Owino</p>
     <p><strong>Co-Founder:</strong> Davies Ongaki</p>
     <p><strong>Manager:</strong> Ramsey John Ng'aNga</p>
   </div>
   <button id="modeToggle" class="button">🌓 Toggle Light/Dark</button>
-  <select id="personalitySelect" aria-label="Select personality mode">
+  <select id="personalitySelect">
     <option value="lutherking">✨ Lutherking Mode</option>
     <option value="ramsey">🔷 Ramsey Mode</option>
   </select>
-  <button id="aboutBtn" class="button" aria-haspopup="dialog" aria-controls="aboutModal">ℹ️ About Us</button>
+  <button id="aboutBtn" class="button">ℹ️ About Us</button>
 </div>
 
 <div id="main">
-  <div id="chatBox" role="log" aria-live="polite" aria-atomic="false">
-    <div class="msg ai" tabindex="0" style="opacity:1; transform:none;">
+  <div id="chatBox">
+    <div class="msg ai">
       <div class="avatar">🤖</div>
       <div>
-        <strong>Welcome to Protogen AI! 🚀</strong><br />
-        I am here to help you. Ask me anything or type your question below.
+        <strong>Welcome to Protogen AI! 🚀</strong><br>
+        I can help with: Math, Science, History, Geography, Technology, Programming, and more!<br>
+        Try asking me anything or click a suggestion below!
       </div>
     </div>
   </div>
-
-  <div id="inputArea" style="order:1;">
-    <input id="prompt" type="text" placeholder="Type your question here..." autocomplete="off" aria-label="Enter your question" autofocus />
-    <button id="uploadBtn" aria-label="Upload files">📎</button>
+  <div class="suggestions" id="suggestions">
+    <button class="suggestion-btn" onclick="askSuggestion('Solve 2x+3=7')">📐 Solve Math</button>
+    <button class="suggestion-btn" onclick="askSuggestion('What is photosynthesis?')">🌱 Science</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Capital of Kenya?')">🌍 Geography</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Explain AI')">🤖 Technology</button>
+    <button class="suggestion-btn" onclick="askSuggestion('What time is it?')">⏰ Time</button>
+    <button class="suggestion-btn" onclick="askSuggestion('Help')">❓ Help</button>
+  </div>
+  <div id="inputArea">
+    <input id="prompt" type="text" placeholder="Ask anything... Protogen AI answers everything..." />
+    <button id="uploadBtn">📎</button>
     <input type="file" id="fileInput" multiple accept="image/*" style="display:none" />
     <button id="sendBtn">Send</button>
   </div>
   <div id="filePreviews"></div>
 </div>
 
-<div id="aboutModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" tabindex="-1" aria-hidden="true">
+<div id="aboutModal" class="modal">
   <div class="modal-content">
-    <h2 id="aboutTitle">About Protogen AI</h2>
-    <p><strong>Founder &amp; CEO:</strong> Martin Lutherking Owino</p>
+    <h2>About Protogen AI</h2>
+    <p><strong>Founder & CEO:</strong> Martin Lutherking Owino</p>
     <p><strong>Co-Founder:</strong> Davies Ongaki</p>
     <p><strong>Manager:</strong> Ramsey John Ng'aNga</p>
     <p><strong>Company:</strong> HECO-AFRICA</p>
@@ -112,72 +118,252 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
 </div>
 
 <script>
+
+// ============================================================================
+// AI RESPONSE FUNCTION - ENHANCED VERSION
+// ============================================================================
 async function generateAIResponse(q, personality = "lutherking", files = []) {
-  const qLower = q.toLowerCase().trim();
+  const qLower = q.toLowerCase();
+
   const tone = personality === "ramsey" 
     ? "🔷 Ramsey Mode: " 
     : "✨ Lutherking Mode: ";
 
-  if (!qLower) return `${tone}Please ask a question.`;
-
-  if (qLower.includes("who created you") || qLower.includes("who made you") || qLower.includes("founder")) {
-    return `${tone}I was created by the founder Martin Lutherking Owino and the co-founder Davies Ongaki, powered by HECO-Africa.`;
+  // FOUNDER QUESTIONS
+  if (qLower.includes("who created") || qLower.includes("who made") || qLower.includes("founder")) {
+    return `${tone}Protogen AI was built by Martin Lutherking Owino (Founder & CEO), co-founded by Davies Ongaki, and managed by Ramsey John Ng'ang'a under HECO-AFRICA.`;
   }
 
-  // You can expand with more logic or integrate external AI APIs here...
-  
-  return `${tone}I'm here to assist with any question you have. Please ask something specific!`;
+  // ADVANCED MATH CALCULATIONS
+  if (/[\d\)\(xX\+\-\*\/\=\^%]/.test(qLower)) {
+    try {
+      let expr = qLower
+        .replace(/solve|calculate|what is|equals?/gi, "")
+        .replace(/\s+/g, "")
+        .replace(/x/gi, "*")
+        .replace(/÷/g, "/")
+        .replace(/\^/g, "**");
+      
+      const answer = Function(`return (${expr})`)();
+      if (!isNaN(answer)) {
+        return `${tone}Math solved: ${expr.replace(/\*\*/g, "^").replace(/\*/g, "×")} = ${answer.toFixed(4)}`;
+      }
+    } catch {}
+  }
+
+  // SCIENCE TOPICS
+  if (qLower.includes("photosynthesis")) {
+    return `${tone}Photosynthesis is the process where plants use sunlight, water, and CO2 to produce glucose (C6H12O6) and oxygen. Formula: 6CO2 + 6H2O + light → C6H12O6 + 6O2`;
+  }
+  if (qLower.includes("gravity")) {
+    return `${tone}Gravity is a fundamental force attracting objects with mass. Earth's gravity is 9.8 m/s². Newton's law: F = G(m1×m2)/r²`;
+  }
+  if (qLower.includes("dna") || qLower.includes("genetics")) {
+    return `${tone}DNA (Deoxyribonucleic Acid) is the genetic blueprint of life. It's a double helix containing genes that code for proteins.`;
+  }
+  if (qLower.includes("atom") || qLower.includes("molecule")) {
+    return `${tone}Atoms are the smallest units of matter, containing protons, neutrons, and electrons. Molecules are atoms bonded together.`;
+  }
+  if (qLower.includes("evolution")) {
+    return `${tone}Evolution is the process by which species change over time through natural selection, as described by Charles Darwin.`;
+  }
+  if (qLower.includes("cell")) {
+    return `${tone}Cells are the basic units of life. Prokaryotic cells lack a nucleus, while eukaryotic cells have a membrane-bound nucleus.`;
+  }
+
+  // HISTORY
+  if (qLower.includes("world war") || qLower.includes("ww1") || qLower.includes("ww2")) {
+    return `${tone}World War I (1914-1918) and World War II (1939-1945) were global conflicts that reshaped the world order.`;
+  }
+  if (qLower.includes("independence") && qLower.includes("kenya")) {
+    return `${tone}Kenya gained independence from Britain on December 12, 1963, with Jomo Kenyatta as the first Prime Minister.`;
+  }
+  if (qLower.includes("napoleon")) {
+    return `${tone}Napoleon Bonaparte was a French military leader who became Emperor of France (1804-1814/1815) and conquered much of Europe.`;
+  }
+
+  // GEOGRAPHY
+  if (qLower.includes("capital") || qLower.includes("country")) {
+    if (qLower.includes("kenya")) return `${tone}Kenya's capital is Nairobi. Population: ~5 million. Major economic hub of East Africa.`;
+    if (qLower.includes("france")) return `${tone}France's capital is Paris, known as the "City of Light".`;
+    if (qLower.includes("japan")) return `${tone}Japan's capital is Tokyo, one of the world's largest metropolitan areas.`;
+    if (qLower.includes("usa") || qLower.includes("america")) return `${tone}USA's capital is Washington D.C., located between Maryland and Virginia.`;
+    if (qLower.includes("uk") || qLower.includes("england")) return `${tone}UK's capital is London, a global financial center.`;
+    if (qLower.includes("germany")) return `${tone}Germany's capital is Berlin.`;
+    if (qLower.includes("china")) return `${tone}China's capital is Beijing.`;
+  }
+  if (qLower.includes("ocean") || qLower.includes("sea")) {
+    return `${tone}The five oceans are: Pacific (largest), Atlantic, Indian, Southern, and Arctic. They cover 71% of Earth's surface.`;
+  }
+
+  // TECHNOLOGY
+  if (qLower.includes("ai") || qLower.includes("artificial intelligence")) {
+    return `${tone}AI (Artificial Intelligence) enables machines to learn, reason, and solve problems. It includes ML, NLP, and computer vision.`;
+  }
+  if (qLower.includes("blockchain")) {
+    return `${tone}Blockchain is a decentralized ledger technology used in cryptocurrencies like Bitcoin. It ensures transparency and security.`;
+  }
+  if (qLower.includes("quantum computing")) {
+    return `${tone}Quantum computers use qubits instead of bits, leveraging superposition and entanglement for exponential processing power.`;
+  }
+  if (qLower.includes("internet")) {
+    return `${tone}The Internet is a global network connecting billions of devices, enabling communication and information sharing worldwide.`;
+  }
+
+  // PROGRAMMING
+  if (qLower.includes("python") || qLower.includes("code") || qLower.includes("programming")) {
+    return `${tone}Python is a high-level programming language known for simplicity and versatility. Used in AI, web dev, data science, and more.`;
+  }
+  if (qLower.includes("javascript")) {
+    return `${tone}JavaScript is a programming language that powers interactive web pages. It runs in browsers and on servers (Node.js).`;
+  }
+
+  // CURRENT EVENTS (2025)
+  if (qLower.includes("trump") || qLower.includes("president")) {
+    return `${tone}Donald Trump won the 2024 US Presidential election and is currently serving as president in 2025.`;
+  }
+  if (qLower.includes("news") || qLower.includes("latest")) {
+    return `${tone}For the latest news, I recommend checking major news sources. AI, climate change, and geopolitics are major 2025 topics.`;
+  }
+
+  // MATH CONCEPTS
+  if (qLower.includes("pythagorean")) {
+    return `${tone}Pythagorean Theorem: a² + b² = c² (for right triangles). Used to find the hypotenuse.`;
+  }
+  if (qLower.includes("quadratic")) {
+    return `${tone}Quadratic formula: x = [-b ± √(b²-4ac)] / 2a. Solves equations in form ax² + bx + c = 0`;
+  }
+  if (qLower.includes("pi") || qLower.includes("3.14")) {
+    return `${tone}Pi (π) ≈ 3.14159... It's the ratio of a circle's circumference to its diameter. Used in geometry and trigonometry.`;
+  }
+
+  // GREETINGS
+  if (qLower.includes("hello") || qLower.includes("hi") || qLower.includes("hey")) {
+    return `${tone}Hello! Protogen AI is fully operational. Ask me anything - science, math, history, tech, current events, and more!`;
+  }
+  if (qLower.includes("how are you")) {
+    return `${tone}All systems optimal! Running at peak performance. Ready to assist with any question!`;
+  }
+  if (qLower.includes("thank")) {
+    return `${tone}You're welcome! Happy to help anytime. Feel free to ask more questions!`;
+  }
+
+  // FILE HANDLING
+  if (files.length > 0) {
+    return `${tone}I've received ${files.length} file(s). While I can acknowledge uploads, my current capabilities are focused on text-based Q&A.`;
+  }
+
+  // TIME/DATE
+  if (qLower.includes("time") || qLower.includes("date") || qLower.includes("today")) {
+    const now = new Date();
+    return `${tone}Current date/time: ${now.toLocaleString('en-US', { timeZone: 'Africa/Nairobi' })} (Nairobi time)`;
+  }
+
+  // HELP
+  if (qLower.includes("help") || qLower.includes("what can you do")) {
+    return `${tone}I can help with:\n📐 Math (calculations, formulas)\n🧪 Science (biology, chemistry, physics)\n📚 History (events, figures)\n🌍 Geography (capitals, countries)\n💻 Technology (AI, programming)\n⏰ Current time/date\n\nJust ask anything!`;
+  }
+
+  // DEFAULT INTELLIGENT RESPONSE
+  return `${tone}Interesting question about "${q}". While I have extensive knowledge, I recommend being more specific or trying: math problems, science concepts, historical events, technology topics, or general knowledge questions. I'm here to help!`;
 }
 
+
+
+// ============================================================================
+// GLOBAL VARIABLES
+// ============================================================================
 let currentPersonality = "lutherking";
 let uploadedFiles = [];
 
+
+
+// ============================================================================
+// DISPLAY MESSAGE FUNCTION
+// ============================================================================
 function displayMessage(sender, text) {
   const chatBox = document.getElementById("chatBox");
+
   const msg = document.createElement("div");
   msg.className = `msg ${sender}`;
-  msg.tabIndex = 0;
+
   const avatar = document.createElement("div");
   avatar.className = "avatar";
   avatar.textContent = sender === "user" ? "👤" : "🤖";
+
   const bubble = document.createElement("div");
   bubble.innerHTML = text.replace(/\n/g, '<br>');
+
   msg.appendChild(avatar);
   msg.appendChild(bubble);
+
   chatBox.appendChild(msg);
   chatBox.scrollTop = chatBox.scrollHeight;
-  msg.focus();
 }
 
+
+
+// ============================================================================
+// SUGGESTION CLICK HANDLER
+// ============================================================================
+function askSuggestion(text) {
+  document.getElementById("prompt").value = text;
+  document.getElementById("sendBtn").click();
+}
+
+
+
+// ============================================================================
+// SEND BUTTON - WITH TYPING INDICATOR
+// ============================================================================
 document.getElementById("sendBtn").addEventListener("click", async () => {
-  const inputEl = document.getElementById("prompt");
-  const input = inputEl.value.trim();
+  const input = document.getElementById("prompt").value.trim();
   if (!input) return;
+
   displayMessage("user", input);
+
+  // Show typing indicator
   const chatBox = document.getElementById("chatBox");
   const typing = document.createElement("div");
   typing.className = "typing";
   typing.textContent = "🤖 Protogen AI is thinking...";
   chatBox.appendChild(typing);
   chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Simulate thinking delay
   await new Promise(resolve => setTimeout(resolve, 800));
   typing.remove();
+
   const response = await generateAIResponse(input, currentPersonality, uploadedFiles);
   displayMessage("ai", response);
-  inputEl.value = "";
+
+  document.getElementById("prompt").value = "";
   uploadedFiles = [];
   document.getElementById("filePreviews").innerHTML = "";
 });
 
-document.getElementById("prompt").addEventListener("keypress", e => {
-  if(e.key === "Enter") document.getElementById("sendBtn").click();
+// Enter key to send
+document.getElementById("prompt").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    document.getElementById("sendBtn").click();
+  }
 });
 
-document.getElementById("personalitySelect").addEventListener("change", e => {
+
+
+// ============================================================================
+// PERSONALITY CHANGE
+// ============================================================================
+document.getElementById("personalitySelect").addEventListener("change", (e) => {
   currentPersonality = e.target.value;
   displayMessage("ai", `Personality switched to ${e.target.value === "ramsey" ? "🔷 Ramsey" : "✨ Lutherking"} mode!`);
 });
 
+
+
+// ============================================================================
+// DARK/LIGHT MODE TOGGLE
+// ============================================================================
 document.getElementById("modeToggle").addEventListener("click", () => {
   document.body.classList.toggle("dark");
   document.body.classList.toggle("light");
@@ -185,57 +371,59 @@ document.getElementById("modeToggle").addEventListener("click", () => {
   displayMessage("ai", `Switched to ${mode} mode! 🌓`);
 });
 
-const sidebar = document.getElementById("sidebar");
-const menuBtn = document.getElementById("menuBtn");
 
-menuBtn.addEventListener("click", () => {
-  sidebar.classList.toggle("closed");
+
+// ============================================================================
+// SIDEBAR TOGGLE
+// ============================================================================
+document.getElementById("menuBtn").addEventListener("click", () => {
+  document.getElementById("sidebar").classList.toggle("closed");
 });
 
-menuBtn.addEventListener("keydown", e => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    sidebar.classList.toggle("closed");
-  }
-});
 
+
+// ============================================================================
+// ABOUT MODAL
+// ============================================================================
 document.getElementById("aboutBtn").addEventListener("click", () => {
-  const modal = document.getElementById("aboutModal");
-  modal.classList.add("show");
-  modal.setAttribute("aria-hidden", "false");
-  modal.focus();
+  document.getElementById("aboutModal").classList.add("show");
 });
 
 document.getElementById("closeAbout").addEventListener("click", () => {
-  const modal = document.getElementById("aboutModal");
-  modal.classList.remove("show");
-  modal.setAttribute("aria-hidden", "true");
-  document.getElementById("prompt").focus();
+  document.getElementById("aboutModal").classList.remove("show");
 });
 
+
+
+// ============================================================================
+// FILE UPLOAD
+// ============================================================================
 document.getElementById("uploadBtn").addEventListener("click", () => {
   document.getElementById("fileInput").click();
 });
 
-document.getElementById("fileInput").addEventListener("change", e => {
+document.getElementById("fileInput").addEventListener("change", (e) => {
   const files = [...e.target.files];
   uploadedFiles = files;
+
   const filePreviews = document.getElementById("filePreviews");
   filePreviews.innerHTML = "";
-  files.forEach(file => {
+
+  files.forEach((file) => {
     const reader = new FileReader();
     reader.onload = () => {
       const box = document.createElement("div");
       box.className = "file-preview";
+
       const img = document.createElement("img");
       img.src = reader.result;
+
       const remove = document.createElement("button");
       remove.textContent = "✖";
-      remove.title = "Remove file preview";
       remove.onclick = () => {
         box.remove();
-        uploadedFiles = uploadedFiles.filter(f => f !== file);
       };
+
       box.appendChild(img);
       box.appendChild(remove);
       filePreviews.appendChild(box);
@@ -243,6 +431,8 @@ document.getElementById("fileInput").addEventListener("change", e => {
     reader.readAsDataURL(file);
   });
 });
+
+
 </script>
 </body>
 </html>
