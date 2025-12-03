@@ -7,7 +7,7 @@
 <style>
 /* COMPLETE CSS */
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Arial', sans-serif; }
-body { overflow:hidden; transition:0.3s; background:#0d0d0f; color:#f1f1f1; }
+body { overflow:auto; transition:0.3s; background:#0d0d0f; color:#f1f1f1; }
 body.light { --bg:#f5f5f5; --text:#111; --card:#ffffffcc; --sidebar:#ffffff; --input:#eee; }
 body.dark { --bg:#0d0d0f; --text:#f1f1f1; --card:#1a1a1ccc; --sidebar:#111; --input:#222; }
 body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
@@ -23,7 +23,7 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
 .button:hover, #sendBtn:hover, #uploadBtn:hover, #modeToggle:hover { transform:scale(1.05); }
 @keyframes gradientBG { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
 #personalitySelect { padding:10px; border-radius:8px; background:#333; color:white; border:none; width:100%; }
-#main { margin-left:280px; margin-top:60px; height:calc(100vh - 60px); display:flex; flex-direction:column; transition:0.5s ease; }
+#main { margin-left:280px; margin-top:60px; min-height:100vh; display:flex; flex-direction:column; }
 #sidebar.closed ~ #main { margin-left:0; }
 #chatBox { flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; min-height: 0; }
 .msg { max-width:70%; padding:14px 18px; border-radius:20px; backdrop-filter:blur(10px); word-break:break-word; opacity:0; transform:translateY(20px); animation: fadeIn 0.5s forwards; display:flex; gap:10px; align-items:flex-start; }
@@ -31,7 +31,7 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
 .ai { background: var(--card); border:1px solid #ffffff22; box-shadow:0 4px 12px #fff2; }
 .avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(45deg,#ff0080,#00ffff); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
 #inputArea { display:flex; padding:12px; gap:10px; background: var(--sidebar); flex-shrink: 0; }
-#prompt { flex:1; padding:14px; border-radius:12px; border:none; outline:none; background: var(--input); color: var(--text); }
+#prompt { flex:1; padding:14px; border-radius:12px; border:none; outline:none; background: var(--input); color: var(--text); font-size:1.1rem; }
 .file-preview { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:10px; background: var(--card); border:1px solid #ffffff22; animation: fadeIn 0.5s forwards; }
 .file-preview img { max-width:50px; max-height:50px; border-radius:6px; object-fit:cover; }
 .file-preview button { background:red; border:none; color:white; border-radius:6px; padding:4px 8px; cursor:pointer; }
@@ -51,7 +51,7 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
   body { overflow: auto !important; }
   #sidebar { transform: translateX(-100%); z-index: 3000; }
   #sidebar.closed { transform: translateX(-100%); }
-  #main { margin-left: 0 !important; height: 100vh; display: flex; flex-direction: column; }
+  #main { margin-left: 0 !important; min-height: 100vh; display: flex; flex-direction: column; }
   #chatBox { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
   #inputArea { flex-shrink: 0; }
   .msg { max-width: 85%; }
@@ -81,7 +81,7 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
 
 <div id="main">
   <div id="chatBox" role="log" aria-live="polite" aria-atomic="false">
-    <div class="msg ai" tabindex="0">
+    <div class="msg ai" tabindex="0" style="opacity:1; transform:none;">
       <div class="avatar">🤖</div>
       <div>
         <strong>Welcome to Protogen AI! 🚀</strong><br />
@@ -90,8 +90,8 @@ body { background: var(--bg); color: var(--text); transition: all 0.4s ease; }
     </div>
   </div>
 
-  <div id="inputArea">
-    <input id="prompt" type="text" placeholder="Type your question here..." autocomplete="off" aria-label="Enter your question" />
+  <div id="inputArea" style="order:1;">
+    <input id="prompt" type="text" placeholder="Type your question here..." autocomplete="off" aria-label="Enter your question" autofocus />
     <button id="uploadBtn" aria-label="Upload files">📎</button>
     <input type="file" id="fileInput" multiple accept="image/*" style="display:none" />
     <button id="sendBtn">Send</button>
@@ -118,17 +118,15 @@ async function generateAIResponse(q, personality = "lutherking", files = []) {
     ? "🔷 Ramsey Mode: " 
     : "✨ Lutherking Mode: ";
 
-  // Expanded example for broad coverage:
   if (!qLower) return `${tone}Please ask a question.`;
 
-  // Quick factual fallback for demonstration:
-  if (qLower.includes("who created") || qLower.includes("founder")) {
-    return `${tone}Protogen AI was built by Martin Lutherking Owino (Founder & CEO), co-founded by Davies Ongaki, and managed by Ramsey John Ng'ang'a under HECO-AFRICA.`;
+  if (qLower.includes("who created you") || qLower.includes("who made you") || qLower.includes("founder")) {
+    return `${tone}I was created by the founder Martin Lutherking Owino and the co-founder Davies Ongaki, powered by HECO-Africa.`;
   }
-  // Add more domain-specific answers here as needed...
+
+  // You can expand with more logic or integrate external AI APIs here...
   
-  // Fallback answer:
-  return `${tone}Sorry, I do not have a specific answer, but I can help with science, math, history, technology, and general questions. Please ask something else!`;
+  return `${tone}I'm here to assist with any question you have. Please ask something specific!`;
 }
 
 let currentPersonality = "lutherking";
@@ -194,7 +192,6 @@ menuBtn.addEventListener("click", () => {
   sidebar.classList.toggle("closed");
 });
 
-// Accessibility: toggle menu with keyboard
 menuBtn.addEventListener("keydown", e => {
   if (e.key === "Enter" || e.key === " ") {
     e.preventDefault();
